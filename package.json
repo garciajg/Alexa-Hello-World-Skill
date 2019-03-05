@@ -9,6 +9,8 @@
   "author": "Jose Garcia",
   "license": "ISC",
   "dependencies": {
-    "ask-sdk": "^2.4.0"
+    "ask-sdk": "^2.4.0",
+    "jsdom": "^13.2.0",
+    "request": "^2.88.0"
   }
 }

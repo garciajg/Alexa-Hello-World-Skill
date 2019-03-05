@@ -1,6 +1,7 @@
 'use strict';
 
 const Alexa = require('ask-sdk');
+const blog = require('./parser.js');
 
 const LaunchRequestHandler = {
     /* This is called when Alexa first launched the app */
@@ -11,7 +12,7 @@ const LaunchRequestHandler = {
 
     handle(handlerInput) {
         // Generates and returns a basic greeting
-        const speechText = 'Welcome to the Alexa Skills Kit, you can say hello!';
+        const speechText = 'Welcome to the Alexa Skills Kit, you can say hello! You can also say tell me number of blogs';
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -19,6 +20,31 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
+
+const BlogIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+          && handlerInput.requestEnvelope.request.intent.name === 'BlogIntent';
+      },
+
+      async handle(handlerInput) {
+        try {
+            const slots = handlerInput.requestEnvelope.request.intent.slots;
+            const number = slots['numberOfBlogs'].value;
+            let blogs = await blog.getBlogTitles(number)
+            console.log(`Results: ${blogs.toString()}`)
+
+            const speechText = `Your blogs are: ${blogs.toString()}.`
+    
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withSimpleCard('What did I learn', speechText)
+                .getResponse()
+        } catch(err) {
+            console.log(err)
+        }
+      },
+}
 
 const HelloWorldIntentHandler = {
     /* Hello Intent,  you specify invocations in the Alexa console */ 
@@ -48,7 +74,7 @@ const HelpIntentHandler = {
     },
 
     handle(handlerInput) {
-        const speechText = 'You can say hello to me!';
+        const speechText = 'You can say hello to me! You can also say "tell me four blogs"';
         return handlerInput.responseBuilder
                 .speak(speechText)
                 .reprompt(speechText)
@@ -94,7 +120,7 @@ const SessionEndedRequestHandler = {
         - API Service time out, etc.
 */
 const ErrorHandler = {
-    canHandle() {
+    canHandle(handlerInput) {
         return true;
     },
 
@@ -110,8 +136,10 @@ const ErrorHandler = {
 
 exports.handler = Alexa.SkillBuilders.custom()
      .addRequestHandlers(LaunchRequestHandler,
+                         BlogIntentHandler, 
                          HelloWorldIntentHandler,
                          HelpIntentHandler,
+                         ErrorHandler,
                          CancelAndStopIntentHandler,
-                         SessionEndedRequestHandler)
+                         SessionEndedRequestHandler,)
      .lambda();
