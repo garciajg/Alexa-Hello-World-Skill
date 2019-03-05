@@ -30,19 +30,47 @@ const BlogIntentHandler = {
       async handle(handlerInput) {
         try {
             const slots = handlerInput.requestEnvelope.request.intent.slots; // This was specified on the console as numberOfBlogs : AMAZON.NUMBER
-            const number = slots['numberOfBlogs'].value; // The number specified by the user
-            let blogs = await blog.getBlogTitles(number)
-
-            const speechText = `Your blogs are: ${blogs.toString()}.` // Alexa's response with the blogs
+            const number = slots.numberOfBlogs.value; // The number specified by the user
+            console.log(`Number: ${number}`)
+            let blogs = await blog.getBlogTitles(Number(number))
+            let speechtext = ""
+            blogs.forEach( (blog, index) => {
+                speechtext += `${index + 1}. ${blog}. `
+            })
+            
+            const speechText = `Your blogs are: ${speechtext}.` // Alexa's response with the blogs
     
             return handlerInput.responseBuilder
                 .speak(speechText)
+                .reprompt(speechText)
                 .withSimpleCard('What did I learn', speechText)
                 .getResponse()
         } catch(err) {
             console.log(err)
         }
       },
+}
+
+const BlogDescriptionIntent = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'BlogDescriptionIntent'
+    },
+
+    async handle(handlerInput) {
+        const slots = handlerInput.requestEnvelope.request.intent.slots
+        const placing = slots.blogPlacing.value
+        try {
+            let description = await blog.getBlogDescription(Number(placing))
+            let speechText = `${description}`
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withSimpleCard("Blog's Description", speechText)
+                .getResponse()
+        } catch(err) {
+            console.log(err)
+        }
+    }
 }
 
 const HelloWorldIntentHandler = {
@@ -124,7 +152,7 @@ const ErrorHandler = {
     },
 
     handle(handlerInput, error) {
-        console.log(`Error Handler: ${error.message}`);
+        // console.log(`Error Handler: ${error.message}`);
         const speechError = "Sorry, I can't understand the command, Please say it again.";
         return handlerInput.responseBuilder
                 .speak(speechError)
@@ -136,6 +164,7 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
      .addRequestHandlers(LaunchRequestHandler,
                          BlogIntentHandler, 
+                         BlogDescriptionIntent,
                          HelloWorldIntentHandler,
                          HelpIntentHandler,
                          ErrorHandler,
