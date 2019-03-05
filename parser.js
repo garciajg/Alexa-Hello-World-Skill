@@ -58,7 +58,9 @@ module.exports = {
     },
 
     getBlogPath(blogTitle) {
-        // TODO: Description of blogs
+        // Returns a blog's title formatted for URL path
+        // ex. Hello World -> hello-world
+        
         let newTitle = blogTitle.toLowerCase()
         let expTitle = newTitle.replace(new RegExp(" ", "g"), "-") // g = Global match; find all matches
         return `${expTitle}`
