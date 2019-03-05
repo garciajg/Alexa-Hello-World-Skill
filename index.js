@@ -29,12 +29,11 @@ const BlogIntentHandler = {
 
       async handle(handlerInput) {
         try {
-            const slots = handlerInput.requestEnvelope.request.intent.slots;
-            const number = slots['numberOfBlogs'].value;
+            const slots = handlerInput.requestEnvelope.request.intent.slots; // This was specified on the console as numberOfBlogs : AMAZON.NUMBER
+            const number = slots['numberOfBlogs'].value; // The number specified by the user
             let blogs = await blog.getBlogTitles(number)
-            console.log(`Results: ${blogs.toString()}`)
 
-            const speechText = `Your blogs are: ${blogs.toString()}.`
+            const speechText = `Your blogs are: ${blogs.toString()}.` // Alexa's response with the blogs
     
             return handlerInput.responseBuilder
                 .speak(speechText)
