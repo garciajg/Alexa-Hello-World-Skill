@@ -68,7 +68,7 @@ Create a Lambda Function from scratch
 - Give it a name
 - Leave `Node.js 8.10` as a runtime option
 - For execution role
-  - Create a new role from AWS policy template
+  - Create a `new role from AWS policy template`
   - Give the role a name
   - For `Policy templates` choose `Simple microservice permissions`
 - Create Function
@@ -86,7 +86,7 @@ Go to your Alexa Console and select your skill
 
 Click on `Enpoint` on the left navigation tab
 
-Select `AWS Lambda ARN` and copy your Lambdas Function's ARN as the `Default Region` 
+Select `AWS Lambda ARN` and paste your Lambda Function's ARN as the `Default Region` 
 
 Go to the `Invocation` tab on the left side and remember your `Invocation Name`
 
