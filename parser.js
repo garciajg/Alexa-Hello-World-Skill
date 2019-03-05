@@ -9,18 +9,21 @@ module.exports = {
         numberOfBlogs given */
         console.log(numberOfBlogs)
 
-        mainURL = "https://www.vokal.io/blog"
         return new Promise( (resolve, reject) => {
             request( {uri: "https://www.vokal.io/blog"}, (error, response, body) => {
                 // If there is an error in the request then finish the async request
                 if (numberOfBlogs > 5) {
+                    // Reject if asking for an index more than 5
                     reject("You can only ask for the five most recent blogs")
-                }else if (error) {
+                }else if (error) { 
+                    // If there is an error
                     reject(error)
+
                 } else {
                     const blogTitles = []
                     const dom = new JSDOM(`${body}`) // Loading HTML source document
                     let blogs = dom.window.document.querySelectorAll("h2") // Reading all h2's in this case the titles of the blogs
+
                     blogs.forEach( (blog) => {
                         let blogTitle = blog.textContent.replace(new RegExp(String.raw`\n`,"g"), "").trim()
                         blogTitles.push(blogTitle)
@@ -40,6 +43,7 @@ module.exports = {
         blogPath = this.getBlogPath(blog)
         mainURL = "https://www.vokal.io/blog"
         blogURL = `${mainURL}/${blogPath}`
+
         return new Promise( (resolve, reject) => {
             request({uri: blogURL}, (error, response, body) => {
                 if (error) {
@@ -47,6 +51,7 @@ module.exports = {
                 }
                 const dom = new JSDOM(`${body}`)
                 let firstParagh = dom.window.document.querySelector("p").textContent
+                
                 resolve(firstParagh)
             })
         })

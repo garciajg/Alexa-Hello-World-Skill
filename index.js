@@ -13,6 +13,7 @@ const LaunchRequestHandler = {
     handle(handlerInput) {
         // Generates and returns a basic greeting
         const speechText = 'Welcome to the Alexa Skills Kit, you can say hello! You can also say tell me number of blogs';
+
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -31,9 +32,9 @@ const BlogIntentHandler = {
         try {
             const slots = handlerInput.requestEnvelope.request.intent.slots; // This was specified on the console as numberOfBlogs : AMAZON.NUMBER
             const number = slots.numberOfBlogs.value; // The number specified by the user
-            console.log(`Number: ${number}`)
             let blogs = await blog.getBlogTitles(Number(number))
             let speechtext = ""
+
             blogs.forEach( (blog, index) => {
                 speechtext += `${index + 1}. ${blog}. `
             })
@@ -60,13 +61,16 @@ const BlogDescriptionIntent = {
     async handle(handlerInput) {
         const slots = handlerInput.requestEnvelope.request.intent.slots
         const placing = slots.blogPlacing.value
+
         try {
             let description = await blog.getBlogDescription(Number(placing))
             let speechText = `${description}`
+
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .withSimpleCard("Blog's Description", speechText)
                 .getResponse()
+
         } catch(err) {
             console.log(err)
         }
@@ -86,6 +90,7 @@ const HelloWorldIntentHandler = {
     handle(handlerInput) {
         // Returns a Hello World response
         const speechText = 'Hello World!';
+
         return handlerInput.responseBuilder
                 .speak(speechText)
                 .withSimpleCard('Hello World', speechText)
@@ -102,6 +107,7 @@ const HelpIntentHandler = {
 
     handle(handlerInput) {
         const speechText = 'You can say hello to me! You can also say "tell me four blogs"';
+
         return handlerInput.responseBuilder
                 .speak(speechText)
                 .reprompt(speechText)
@@ -120,6 +126,7 @@ const CancelAndStopIntentHandler = {
 
     handle(handlerInput) {
         const speechText = 'Goodbye!';
+
         return handlerInput.responseBuilder
                 .speak(speechText)
                 .withSimpleCard('Hello World', speechText)
@@ -154,6 +161,7 @@ const ErrorHandler = {
     handle(handlerInput, error) {
         // console.log(`Error Handler: ${error.message}`);
         const speechError = "Sorry, I can't understand the command, Please say it again.";
+        
         return handlerInput.responseBuilder
                 .speak(speechError)
                 .reprompt(speechError)
