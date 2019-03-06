@@ -33,6 +33,8 @@ what's going on
 
 ### Test Locally
 
+**Note:** Works great for debugging. Any error logs in your local terminal
+
 On your Alexa's Console main page, right under your skill's name click on `View Skill ID`   
 
 On the `asl-config.json` file change the current `skillId` to your skill's ID
